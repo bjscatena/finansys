@@ -7,7 +7,7 @@
       <a routerLink="/categories">Categorias</a>
     </li>
     <li class="breadcrumb-item active">
-      Formulário de categoria
+      {{ pageTitle }}
     </li>
   </ol>
 </nav>
@@ -39,6 +39,22 @@
             id="name"
             formControlName="name"
           />
+
+          <div
+            class="text-danger"
+            *ngIf="
+              categoryForm.get('name').invalid &&
+              categoryForm.get('name').touched
+            "
+          >
+            <div *ngIf="categoryForm.get('name').hasError('required')">
+              dado obrigatório
+            </div>
+
+            <div *ngIf="categoryForm.get('name').hasError('minlength')">
+              deve ter no mínimo 2 caracteres
+            </div>
+          </div>
         </div>
 
         <div class="form-group col-md-8">
@@ -54,7 +70,18 @@
     </div>
   </div>
 
-  <button type="submit" class="btn btn-primary btn-lg float-right mt-3">
+  <div class="alert alert-danger mt-4" *ngIf="serverErrorMessages">
+    <strong>Erros no servidor</strong>
+    <ul>
+      <li *ngFor="let error of serverErrorMessages">{{ error }}</li>
+    </ul>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="submittingForm || categoryForm.invalid"
+    class="btn btn-primary btn-lg float-right mt-3"
+  >
     Salvar
   </button>
 </form>

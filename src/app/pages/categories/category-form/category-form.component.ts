@@ -89,11 +89,19 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     const category: Category = { ...this.categoryForm.value };
 
     this.categoryService.create(category).subscribe(
-      category => this.actionsForSuccess(category),
+      createdCategory => this.actionsForSuccess(createdCategory),
       error => this.actionsForError(error)
     );
   }
-  private updateCategory() {}
+
+  private updateCategory() {
+    const category: Category = { ...this.categoryForm.value };
+
+    this.categoryService.update(category).subscribe(
+      createdCategory => this.actionsForSuccess(createdCategory),
+      error => this.actionsForError(error)
+    );
+  }
 
   private actionsForSuccess(category: Category) {
     toastr.success('Solicitação processada com sucesso');
@@ -101,11 +109,15 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     this.router
       .navigateByUrl('categories', { skipLocationChange: true })
       .then(() => this.router.navigate(['categories', category.id, 'edit']));
+
     this.router.navigateByUrl('categories');
+
+    this.submittingForm = false;
   }
 
   private actionsForError(error: any) {
     toastr.error('Ocorreu um erro ao processar sua solicitação');
+
     this.submittingForm = false;
 
     if (error.stats === 422) {
